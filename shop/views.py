@@ -33,12 +33,14 @@ def add_to_order(request, item_id):
     return redirect(index)
 
 
-class SuccessView(TemplateView):
-    template_name = 'success.html'
+def success_view(request):
+    order = Order.objects.get_or_create(session_id=request.session.session_key)[0]
+    order.delete()
+    return render(request, 'success.html')
 
 
-class CancelledView(TemplateView):
-    template_name = 'cancelled.html'
+def cancelled_view(request):
+    return render(request, 'cancelled.html')
 
 
 @csrf_exempt
@@ -53,7 +55,7 @@ def get_items_from_order(request):
     items = order.items.all()
     stripe_item_list = []
     for item in items:
-        tmp = {'name': item.name, 'quantity': 1, 'currency': 'usd', 'amount': int(item.price*100)}
+        tmp = {'name': item.name, 'quantity': 1, 'currency': 'usd', 'amount': int(item.price * 100)}
         stripe_item_list.append(tmp)
     return stripe_item_list
 

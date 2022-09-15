@@ -8,6 +8,6 @@ urlpatterns = [
     path('add/<int:item_id>', views.add_to_order, name='add_to_order'),
     path('config/', views.stripe_config),
     path('buy/', views.create_checkout_session),
-    path('success/', views.SuccessView.as_view()), # new
-    path('cancelled/', views.CancelledView.as_view()), # new
+    path('success/', views.success_view), # new
+    path('cancelled/', views.cancelled_view), # new
 ]

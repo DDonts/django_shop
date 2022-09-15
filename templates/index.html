@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Shop
+{% endblock %}
+{% block script %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+    <section class="section">
+        {% if order.items.all|length > 0 %}
+            <h1>ORDER</h1>
+            {% for item in order.items.all %}
+                <p>{{ item.name }}: {{ item.price }}</p>
+            {% endfor %}
+            <h2>Total: {{ order.total }}</h2>
+            <div class="container">
+                <button class="button is-primary" id="submitBtn">Purchase!</button>
+            </div>
+        {% endif %}
+        {% for item in items %}
+            <form action="{% url 'add_to_order' item.id %}">
+                <p><u><a href="{% url 'item' item.id %}">Item: {{ item.name }}</a></u></p>
+                <button class="button is-primary">Add to Order</button>
+            </form>
+        {% endfor %}
+    </section>
+    <script>
+        fetch("/config/")
+            .then((result) => {
+                return result.json();
+            })
+            .then((data) => {
+                const stripe = Stripe(data.publicKey);
+                document.querySelector("#submitBtn").addEventListener("click", () => {
+                    fetch("/buy/")
+                        .then((result) => {
+                            return result.json();
+                        })
+                        .then((data) => {
+                            console.log(data);
+                            return stripe.redirectToCheckout({sessionId: data.sessionId})
+                        })
+                        .then((res) => {
+                            console.log(res);
+                        });
+                });
+            });
+    </script>
+{% endblock %}

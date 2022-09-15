@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ item.name }}
+{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <h1>{{ item.name }}</h1>
+        <h2>{{ item.description }}</h2>
+        <h1>Price: ${{ item.price }}</h1>
+        <form action="{% url 'add_to_order' item.id %}">
+            <button class="button is-primary">Add to Order</button>
+        </form>
+    </section>
+{% endblock %}

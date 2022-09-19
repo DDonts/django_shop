@@ -24,4 +24,4 @@ def update_order(sender, instance, **kwargs):
     for item in instance.items.all():
         total += float(item.price)
     instance.total = total
-    instance.save()
+    instance.save(update_fields=['total'])

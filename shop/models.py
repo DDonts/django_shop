@@ -20,5 +20,6 @@ class Order(models.Model):
 
 @receiver(m2m_changed, sender=Order.items.through)
 def update_order(sender, instance, **kwargs):
-    instance.total = instance.items.aggregate(Sum('price'))
+    total = instance.items.aggregate(Sum('price'))['price_sum']
+    instance.total = float(total)
     instance.save(update_fields=['total'])
